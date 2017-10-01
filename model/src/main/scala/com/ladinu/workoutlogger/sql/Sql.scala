@@ -1,12 +1,18 @@
 package com.ladinu.workoutlogger.sql
 
 
-import doobie._, doobie.implicits._
-import cats._, cats.data._, cats.effect._, cats.implicits._
+import doobie._
+import doobie.implicits._
+import cats._
+import cats.data._
+import cats.effect._
+import cats.implicits._
 import cats.~>
-
+import com.ladinu.workoutlogger.model.Note
 object Sql {
-  def createNotesTable: Update0 =
+  object Database {
+
+  val createNotesTable: Update0 =
     sql"""
           CREATE TABLE IF NOT EXISTS notes(
             id    INTEGER   NOT NULL PRIMARY KEY,
@@ -14,7 +20,7 @@ object Sql {
           );
       """.update
 
-  def createExerciseNamesTable: Update0 =
+  val createExerciseNamesTable: Update0 =
     sql"""
           CREATE TABLE IF NOT EXISTS exercise_names(
             id            INTEGER   NOT NULL PRIMARY KEY,
@@ -23,7 +29,7 @@ object Sql {
           );
       """.update
 
-  def createWorkoutsTable: Update0 =
+  val createWorkoutsTable: Update0 =
     sql"""
           CREATE TABLE IF NOT EXISTS workouts(
             id            INTEGER     NOT NULL PRIMARY KEY,
@@ -33,7 +39,7 @@ object Sql {
           );
       """.update
 
-  def createSetsTable: Update0 =
+  val createSetsTable: Update0 =
     sql"""
           CREATE TABLE IF NOT EXISTS sets(
             id      INTEGER     NOT NULL PRIMARY KEY,
@@ -44,7 +50,7 @@ object Sql {
           );
       """.update
 
-  def createExercisesTable: Update0 =
+  val createExercisesTable: Update0 =
     sql"""
           CREATE TABLE IF NOT EXISTS exercises(
             datetime         INTEGER    NOT NULL,
@@ -59,25 +65,37 @@ object Sql {
           );
       """.update
 
-  def createExercisesTableIndex: Update0 =
+  val createExercisesTableIndex: Update0 =
     sql"""
           CREATE INDEX IF NOT EXISTS datetime_index ON exercises(datetime);
        """.update
 
-  def setupDB: ConnectionIO[Int] =
+  val setup: ConnectionIO[Int] =
     createNotesTable.run *>
       createExerciseNamesTable.run *>
       createWorkoutsTable.run *>
       createSetsTable.run *>
       createExercisesTable.run *>
       createExercisesTableIndex.run
+  }
+
+  object Query {
+    def insertNote(note: Note): Update0 =
+      sql"""
+            INSERT INTO notes(text) VALUES(${note.content});
+         """.update
+  }
 }
 
 object Test extends App {
   val xa = Transactor.fromDriverManager[IO](
-    "org.sqlite.JDBC", "jdbc:sqlite::memory:", "", ""
+    "org.sqlite.JDBC", "jdbc:sqlite::memory:s", "", ""
   )
 
+  println(
+    Sql.Query.insertNote(Note("x")).ge
+  )
 
-  print(Sql.setupDB.transact(xa).unsafeRunSync)
+  println(Sql.Database.setup.transact(xa).unsafeRunSync)
+  println(Sql.Query.insertNote(Note("test")).run.transact(xa).unsafeRunSync)
 }
