@@ -73,6 +73,8 @@ object Sql {
       createSetsTable.run *>
       createExercisesTable.run *>
       createExercisesTableIndex.run
+
+    val n = setup *> "a".pure[ConnectionIO]
   }
 }
 

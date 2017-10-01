@@ -12,7 +12,8 @@ class NotesTableTest extends WordSpec
 
   "Notes table" must {
     "initially be empty" in {
-      val x = 43.pure[ConnectionIO]
+      val x: ConnectionIO[Int] = sql"SELECT COUNT(*) FROM notes;".query[Int].unique
+      x.
       x.transact(xa).unsafeRunSync() should equal(43)
     }
   }
