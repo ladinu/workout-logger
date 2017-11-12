@@ -1,7 +1,9 @@
 package com.ladinu.workoutlogger.sql
 
 
+import cats.free.Cofree
 import cats.implicits._
+import com.ladinu.workoutlogger.model.Note
 import doobie._
 import doobie.implicits._
 
@@ -16,9 +18,9 @@ object Sql {
           );
       """.update
 
-  val createExerciseNamesTable: Update0 =
+  val createExerciseDescriptionTable: Update0 =
     sql"""
-          CREATE TABLE IF NOT EXISTS exercise_names(
+          CREATE TABLE IF NOT EXISTS exercise_description(
             id            INTEGER   NOT NULL PRIMARY KEY,
             name          TEXT      NOT NULL,
             description   TEXT
@@ -56,7 +58,7 @@ object Sql {
             note_id          INTEGER,
             FOREIGN KEY(set_id)             REFERENCES sets(id),
             FOREIGN KEY(workout_id)         REFERENCES workouts(id),
-            FOREIGN KEY(exercise_name_id)   REFERENCES exercise_names(id),
+            FOREIGN KEY(exercise_name_id)   REFERENCES exercise_description(id),
             FOREIGN KEY(note_id)            REFERENCES notes(id)
           );
       """.update
@@ -68,13 +70,12 @@ object Sql {
 
   val setup: ConnectionIO[Int] =
     createNotesTable.run *>
-      createExerciseNamesTable.run *>
+      createExerciseDescriptionTable.run *>
       createWorkoutsTable.run *>
       createSetsTable.run *>
       createExercisesTable.run *>
       createExercisesTableIndex.run
-
-    val n = setup *> "a".pure[ConnectionIO]
   }
+
 }
 

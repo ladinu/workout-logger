@@ -35,8 +35,9 @@ lazy val root = (project in file("."))
   .settings(commonSettings:_*)
   .settings(
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "3.0.1" % "test",
-      "org.scalacheck" %% "scalacheck" % "1.13.4" % "test"
+      "org.scalatest" %% "scalatest" % "3.0.4" % Test,
+      "org.scalactic" %% "scalactic" % "3.0.4" % Test,
+      "org.scalacheck" %% "scalacheck" % "1.13.4" % Test
     )
   )
   .dependsOn(`model`, `sql`)

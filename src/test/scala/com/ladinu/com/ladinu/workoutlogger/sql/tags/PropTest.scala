@@ -1,4 +1,4 @@
-package com.ladinu.workoutloger.sql.tags
+package com.ladinu.com.ladinu.workoutlogger.sql.tags
 
 import org.scalatest.Tag
 

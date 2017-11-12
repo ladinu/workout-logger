@@ -4,4 +4,4 @@ import java.time.LocalDateTime
 
 import cats.data.NonEmptyList
 
-case class Exercise(name: String, description: String, sets: NonEmptyList[ExerciseSet], notes: Option[Note], timeStamp: LocalDateTime)
+case class Exercise(exerciseDescription: ExerciseDescription, sets: NonEmptyList[ExerciseSet], notes: Option[Note], timeStamp: LocalDateTime)
