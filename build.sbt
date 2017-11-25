@@ -25,7 +25,7 @@ lazy val sql = (project in file("sql"))
     libraryDependencies ++= Seq(
       "org.tpolecat" %% "doobie-core"       % doobieVersion,
       "org.tpolecat" %% "doobie-hikari" % doobieVersion,
-      "org.xerial" % "sqlite-jdbc"   % "3.7.2"
+      "org.xerial" % "sqlite-jdbc"   % "3.7.2" % Test
     )
   )
   .dependsOn(model)
